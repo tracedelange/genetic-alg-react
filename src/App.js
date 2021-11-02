@@ -1,25 +1,53 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useState, useEffect} from 'react'
+import { baseURL } from './globals'
+import {generateProblem} from './requests'
+import ScatterChartComponent from './components/ScatterChartComponent'
+import ProblemGenInput from './components/ProblemGenInput'
 
-function App() {
+
+
+const App = () => {
+
+  const [problem, setProblem] = useState({
+    coordinates : [],
+    x: [],
+    y: []
+  })
+
+  
+
+
+
+  const handleFetchCities = (cityCount=10) => {
+
+    generateProblem(cityCount)
+    .then(data => {
+      if (data) {
+        console.log(data)
+        setProblem({
+          coordinates: data[0],
+          x: data[1],
+          y: data[2]
+        })
+      } else {
+        console.log('No data')
+      }
+    })
+
+  }
+
+  useEffect(()=>{
+    handleFetchCities()
+  },[])
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <ProblemGenInput  handleButtonClick={handleFetchCities}/>
+      <ScatterChartComponent data={problem}/>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
+
